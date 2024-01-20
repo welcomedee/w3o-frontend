@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class ="card">
+        <div class="search">
+            <input type="text" placeholder="Enter city name" spellcheck="false">
+            <button><img src="https://uxwing.com/wp-content/themes/uxwing/download/user-interface/search-icon.png"></button>
+        </div>
+        <div class="error">
+            <p>Invalid city name</p>
+        </div>
+        <div class="weather">
+            <img src="https://static.vecteezy.com/system/resources/thumbnails/010/989/526/small_2x/rainy-weather-3d-rendering-isolated-on-transparent-background-ui-ux-icon-design-web-and-app-trend-png.png" class="weather-icon">
+            <h1 class="temp">22°c</h1>
+            <h2 class="city">New York</h2>
+            <div class="details">
+                <div class="col">
+                    <img src="https://cdn-icons-png.freepik.com/128/2352/2352792.png?uid=R111829920&ga=GA1.1.1406353414.1705419687&semt=ais">
+                    <div>
+                        <p class="humidity">50%</p>
+                        <p>Humidity</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <img src="https://cdn-icons-png.freepik.com/128/2938/2938002.png?uid=R111829920&ga=GA1.1.1406353414.1705419687&semt=ais">
+                    <div>
+                        <p class="wind">15 km/hr</p>
+                        <p>Wind Speed</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const apiKey = "5d63a8373c43c34c9ad0f156ac743ebb";
+        const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+        
+        const searchBox = document.querySelector(".search input"); //assign the html elements to the variables
+        const searchBtn = document.querySelector(".search button");
+        const weatherIcon = document.querySelector(".weather-icon");
+
+        async function checkweather(city){
+            const response = await fetch(apiUrl + city + `&appid=${apiKey}`); //fetch: to make an asynchronous HTTP request to a weather API
+            if(response.status == 404){
+                document.querySelector(".weather").style.display = "none";
+                document.querySelector(".error").style.display = "block";
+            }else{
+                var data = await response.json(); //await: wait for the completion of the request
+                console.log(data);
+            document.querySelector(".city").innerHTML = data.name;
+            document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°c";
+            document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
+            document.querySelector(".wind").innerHTML = data.wind.speed +" km/h";
+
+            if (data.weather[0].main == "Clouds"){
+                weatherIcon.src="https://cdn-icons-png.freepik.com/128/9231/9231647.png?uid=R111829920&ga=GA1.1.1406353414.1705419687&semt=ais"
+            }
+            else if (data.weather[0].main == "Clear"){
+                weatherIcon.src="https://cdn-icons-png.freepik.com/128/1828/1828588.png?uid=R111829920&ga=GA1.1.1406353414.1705419687&semt=ais"
+            }
+            else if (data.weather[0].main == "Rain"){
+                weatherIcon.src="https://cdn-icons-png.freepik.com/128/4146/4146440.png?uid=R111829920&ga=GA1.1.1406353414.1705419687&semt=ais"
+            }
+            else if (data.weather[0].main == "Drizzle"){
+                weatherIcon.src="https://cdn-icons-png.freepik.com/128/6402/6402911.png?uid=R111829920&ga=GA1.1.1406353414.1705419687&semt=ais"
+            }
+            else if (data.weather[0].main == "Mist"){
+                weatherIcon.src="https://www.freepik.com/icon/cloudy_1163661#fromView=search&term=weather+icons&track=ais&page=1&position=42&uuid=0f2bce62-8c35-4e4c-9151-2caa5be659c7"
+            }
+            else if (data.weather[0].main == "Snow"){
+                weatherIcon.src="https://cdn-icons-png.freepik.com/128/9231/9231841.png?uid=R111829920&ga=GA1.1.1406353414.1705419687&semt=ais"
+            }
+            document.querySelector(".weather").style.display = "block";
+            document.querySelector(".error").style.display = "none";
+
+
+            }
+            
+        }
+
+
+        searchBtn.addEventListener("click" , ()=>{
+            checkweather(searchBox.value);
+
+        })
+        
+    </script>
+</body>
+</html>
